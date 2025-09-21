@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zehram'a Özel Hediye</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Giriş ekranı */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #ff9ff3, #54a0ff);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .intro-screen.fade-out {
+            opacity: 0;
+        }
+
+        .intro-text {
+            text-align: center;
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: pulse 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        /* Ana içerik */
+        .main-content {
+            display: none;
+            padding: 20px;
+        }
+
+        .main-content.show {
+            display: block;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #e74c3c;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        .languages-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .language-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+
+        .language-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            border-left-color: #e74c3c;
+        }
+
+        .language-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .flag {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .language-name {
+            font-size: 1.1em;
+        }
+
+        .message {
+            color: #34495e;
+            font-size: 1.1em;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .hearts {
+            margin-left: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Floating hearts animasyonu */
+        .floating-heart {
+            position: fixed;
+            color: #e74c3c;
+            font-size: 20px;
+            pointer-events: none;
+            animation: float 4s ease-in-out infinite;
+            z-index: 100;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive tasarım */
+        @media (max-width: 768px) {
+            .intro-text {
+                font-size: 2em;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .languages-container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+            
+            .language-card {
+                padding: 20px;
+            }
+        }
+
+        /* Scroll animasyonu */
+        .language-card {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .language-card:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+
+        .language-card:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Giriş ekranı -->
+    <div class="intro-screen" id="introScreen">
+        <div class="intro-text">
+            Ruhidden Zehraya Hediye 💕👼
+        </div>
+    </div>
+
+    <!-- Ana içerik -->
+    <div class="main-content" id="mainContent">
+        <div class="header">
+            <h1>💖 Meleğim Zehram'a Özel 👼</h1>
+            <p>Dünyanın her dilinde sana ne kadar önemli olduğunu söylüyorum</p>
+        </div>
+
+        <div class="languages-container">
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇬🇧</span>
+                    <span class="language-name">İngilizce</span>
+                    <span class="hearts">💕👼</span>
+                </div>
+                <div class="message">You are very important to me, my angel Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇩🇪</span>
+                    <span class="language-name">Almanca</span>
+                    <span class="hearts">💞🌸</span>
+                </div>
+                <div class="message">Du bist mir sehr wichtig, mein Engel Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇫🇷</span>
+                    <span class="language-name">Fransızca</span>
+                    <span class="hearts">💖🌷</span>
+                </div>
+                <div class="message">Tu es très importante pour moi, mon ange Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇪🇸</span>
+                    <span class="language-name">İspanyolca</span>
+                    <span class="hearts">❤️🌹</span>
+                </div>
+                <div class="message">Eres muy importante para mí, mi ángel Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇮🇹</span>
+                    <span class="language-name">İtalyanca</span>
+                    <span class="hearts">💗🌺</span>
+                </div>
+                <div class="message">Sei molto importante per me, mio angelo Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇵🇹</span>
+                    <span class="language-name">Portekizce</span>
+                    <span class="hearts">💓🌻</span>
+                </div>
+                <div class="message">Você é muito importante para mim, meu anjo Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇷🇺</span>
+                    <span class="language-name">Rusça</span>
+                    <span class="hearts">💕❄️</span>
+                </div>
+                <div class="message">Ты очень важна для меня, мой ангел Зехрам</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇺🇦</span>
+                    <span class="language-name">Ukraynaca</span>
+                    <span class="hearts">💛💙</span>
+                </div>
+                <div class="message">Ти дуже важлива для мене, моя ангел Зехрам</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇵🇱</span>
+                    <span class="language-name">Lehçe</span>
+                    <span class="hearts">💞🌼</span>
+                </div>
+                <div class="message">Jesteś dla mnie bardzo ważna, mój aniele Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇳🇱</span>
+                    <span class="language-name">Hollandaca</span>
+                    <span class="hearts">💖🌷</span>
+                </div>
+                <div class="message">Je bent erg belangrijk voor mij, mijn engel Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇸🇪</span>
+                    <span class="language-name">İsveççe</span>
+                    <span class="hearts">💕✨</span>
+                </div>
+                <div class="message">Du är mycket viktig för mig, min ängel Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇳🇴</span>
+                    <span class="language-name">Norveççe</span>
+                    <span class="hearts">💖❄️</span>
+                </div>
+                <div class="message">Du er veldig viktig for meg, min engel Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇩🇰</span>
+                    <span class="language-name">Danca</span>
+                    <span class="hearts">💞🌸</span>
+                </div>
+                <div class="message">Du er meget vigtig for mig, min engel Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇫🇮</span>
+                    <span class="language-name">Fince</span>
+                    <span class="hearts">💙❄️</span>
+                </div>
+                <div class="message">Olet minulle hyvin tärkeä, enkeli Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇹🇷</span>
+                    <span class="language-name">Türkçe</span>
+                    <span class="hearts">💜👼</span>
+                </div>
+                <div class="message">Benim için çok önemlisin meleğim Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇸🇦</span>
+                    <span class="language-name">Arapça</span>
+                    <span class="hearts">💕🌙</span>
+                </div>
+                <div class="message">أنتِ مهمة جدًا بالنسبة لي، ملاكي Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇮🇷</span>
+                    <span class="language-name">Farsça</span>
+                    <span class="hearts">💞🌹</span>
+                </div>
+                <div class="message">تو برای من خیلی مهمی، فرشته‌ام Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇮🇳</span>
+                    <span class="language-name">Hintçe</span>
+                    <span class="hearts">💖🌸</span>
+                </div>
+                <div class="message">तुम मेरे लिए बहुत मायने रखती हो, मेरी परी Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇯🇵</span>
+                    <span class="language-name">Japonca</span>
+                    <span class="hearts">💕🌸</span>
+                </div>
+                <div class="message">あなたは私にとってとても大切です、私の天使 Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇨🇳</span>
+                    <span class="language-name">Çince</span>
+                    <span class="hearts">💖🌸</span>
+                </div>
+                <div class="message">你对我非常重要，我的天使 Zehram</div>
+            </div>
+
+            <div class="language-card">
+                <div class="language-header">
+                    <span class="flag">🇰🇷</span>
+                    <span class="language-name">Korece</span>
+                    <span class="hearts">💗🌸</span>
+                </div>
+                <div class="message">너는 내게 아주 중요해, 내 천사 Zehram</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Giriş ekranı animasyonu
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const introScreen = document.getElementById('introScreen');
+                const mainContent = document.getElementById('mainContent');
+                
+                introScreen.classList.add('fade-out');
+                
+                setTimeout(function() {
+                    introScreen.style.display = 'none';
+                    mainContent.classList.add('show');
+                    
+                    // Kalp animasyonunu başlat
+                    startHeartAnimation();
+                }, 500);
+            }, 2000); // 2 saniye bekleme
+        });
+
+        // Uçan kalp animasyonu
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = '💕';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        function startHeartAnimation() {
+            setInterval(createFloatingHeart, 2000);
+        }
+
+        // Hover efektleri
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.language-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
